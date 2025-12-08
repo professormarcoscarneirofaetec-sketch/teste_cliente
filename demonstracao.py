@@ -55,7 +55,7 @@ def criar_e_popular_sqlite():
     cursor.execute("REPLACE INTO Turmas (id_turma, nome_turma, ano_letivo) VALUES (?, ?, ?)", (id_turma_padrao, "Exemplo 2025/1", 2025))
     
     # Nova Versão (Exemplo para Educação Básica):
-disciplinas_list = ["Língua_Portuguesa", "Matemática", "Ciências", "História", "Geografia", "Artes"]
+disciplinas_list = ["Língua Portuguesa", "Matemática", "Ciências", "História", "Geografia", "Artes"]
     for i, disc in enumerate(disciplinas_list): 
         cursor.execute("REPLACE INTO Disciplinas (id_disciplina, nome_disciplina) VALUES (?, ?)", (i+1, disc))
     cursor.execute("SELECT id_disciplina, nome_disciplina FROM Disciplinas")
