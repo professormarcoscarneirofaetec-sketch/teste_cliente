@@ -27,9 +27,9 @@ diario_de_classe = {
 # =========================================================================
 
 # CÓDIGO ATUAL (Com Erro de Indentação)
-@st.cache_resource
-    def criar_e_popular_sqlite(): # <--- ERRO: Espaço antes do 'def'
-    conn = sqlite3.connect(DB_NAME) # <--- ERRO: Indentação inválida
+**@st.cache_resource**
+    **def criar_e_popular_sqlite():**
+		conn = sqlite3.connect(DB_NAME) # <--- ERRO: Indentação inválida
 # ...
 
 # CÓDIGO CORRIGIDO (Alinhado)
@@ -76,7 +76,7 @@ def criar_e_popular_sqlite():
     return aluno_map, disciplina_map
 
 
-    def calcular_media_final(avaliacoes):
+    **def calcular_media_final(avaliacoes):**
     p1_val = avaliacoes.get("P1"); p2_val = avaliacoes.get("P2"); p3_val = avaliacoes.get("P3")
     
     # Tratamento para garantir que None/NaN sejam 0.0 na média parcial
@@ -103,7 +103,7 @@ def criar_e_popular_sqlite():
     
     return nota_final, situacao_nota, media_parcial
 
-    def lancar_aula_e_frequencia(id_disciplina, data_aula, conteudo):
+    **def lancar_aula_e_frequencia(...)**
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     id_turma_padrao = 1
@@ -129,7 +129,7 @@ def criar_e_popular_sqlite():
     finally:
         conn.close()
 
-    def inserir_nota_no_db(id_aluno, id_disciplina, tipo_avaliacao, valor_nota):
+    **def inserir_nota_no_db(...)**
     if valor_nota is None or valor_nota < 0 or valor_nota > 10.0:
         st.warning("⚠️ Erro: Insira um valor de nota válido (0.0 a 10.0).")
         return
