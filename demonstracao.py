@@ -26,18 +26,19 @@ diario_de_classe = {
 # FUNÇÕES DE LÓGICA E BD
 # =========================================================================
 
-# CÓDIGO ATUAL (Com Erro de Indentação)
-@st.cache_resource
-    def criar_e_popular_sqlite():
-		conn = sqlite3.connect(DB_NAME) # <--- ERRO: Indentação inválida
-
-# CÓDIGO CORRIGIDO (Alinhado)
 @st.cache_resource
 def criar_e_popular_sqlite():
-    conn = sqlite3.connect(DB_NAME) # <--- 4 espaços
-    cursor = conn.cursor() # <--- 4 espaços
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
 
-	# ... E o restante do código da função deve seguir a indentação correta (4 espaços)
+    # 1. DELETAR TABELAS ANTIGAS PARA GARANTIR ESTRUTURA CORRETA (Isso é bom para DEMO, pois reseta o ambiente)
+    cursor.execute("DROP TABLE IF EXISTS Frequencia")
+    cursor.execute("DROP TABLE IF EXISTS Notas")
+    cursor.execute("DROP TABLE IF EXISTS Aulas")
+    cursor.execute("DROP TABLE IF EXISTS Alunos")
+    cursor.execute("DROP TABLE IF EXISTS Disciplinas")
+    cursor.execute("DROP TABLE IF EXISTS Turmas")
+    conn.commit()
     
     # 2. CRIAÇÃO DAS TABELAS
     cursor.execute('''CREATE TABLE Alunos (id_aluno INTEGER PRIMARY KEY, nome TEXT NOT NULL, matricula TEXT UNIQUE NOT NULL);''')
@@ -74,6 +75,7 @@ def criar_e_popular_sqlite():
     # Retorna os mapas necessários para os selectboxes
     return aluno_map, disciplina_map
 
+
 def calcular_media_final(avaliacoes):
     p1_val = avaliacoes.get("P1"); p2_val = avaliacoes.get("P2"); p3_val = avaliacoes.get("P3")
     
@@ -101,7 +103,8 @@ def calcular_media_final(avaliacoes):
     
     return nota_final, situacao_nota, media_parcial
 
-def lancar_aula_e_frequencia(...)
+
+def lancar_aula_e_frequencia(id_disciplina, data_aula, conteudo):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     id_turma_padrao = 1
@@ -127,21 +130,22 @@ def lancar_aula_e_frequencia(...)
     finally:
         conn.close()
 
-def inserir_nota_no_db(...)
+
+def inserir_nota_no_db(id_aluno, id_disciplina, tipo_avaliacao, valor_nota):
     if valor_nota is None or valor_nota < 0 or valor_nota > 10.0:
         st.warning("⚠️ Erro: Insira um valor de nota válido (0.0 a 10.0).")
         return
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     try:
-        
-		# REPLACE INTO permite inserção (criação) ou atualização de nota, o que é permitido na demo.
+        # REPLACE INTO permite inserção (criação) ou atualização de nota, o que é permitido na demo.
         cursor.execute("""REPLACE INTO Notas (id_aluno, id_disciplina, tipo_avaliacao, valor_nota) VALUES (?, ?, ?, ?)""", (id_aluno, id_disciplina, tipo_avaliacao, valor_nota))
         conn.commit()
         st.success(f"✅ Nota {tipo_avaliacao} ({valor_nota:.1f}) inserida/atualizada.")
     except Exception as e:
         st.error(f"❌ Erro ao inserir nota: {e}")
     finally: conn.close()
+
 
 def obter_frequencia_por_aula(id_disciplina, data_aula):
     conn = sqlite3.connect(DB_NAME)
@@ -176,6 +180,7 @@ def obter_frequencia_por_aula(id_disciplina, data_aula):
     df['Opção'] = df['id_frequencia'].astype(str) + ' - ' + df['Aluno']
     return df, id_aula
 
+
 def atualizar_status_frequencia(id_frequencia, novo_status):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
@@ -189,6 +194,7 @@ def atualizar_status_frequencia(id_frequencia, novo_status):
         st.error(f"❌ Erro ao atualizar frequência: {e}")
     finally:
         conn.close()
+
 
 def gerar_relatorio_final_completo(): 
     try:
@@ -218,7 +224,7 @@ def gerar_relatorio_final_completo():
         return None
 
     resultados_finais = []
-for index, row in df_relatorio.iterrows():
+    for index, row in df_relatorio.iterrows():
         total_aulas = row['Total_Aulas'] or 0; total_presencas = row['Total_Presencas'] or 0
         frequencia_percentual = (total_presencas / total_aulas * 100) if total_aulas > 0 else 0
         
@@ -253,6 +259,7 @@ for index, row in df_relatorio.iterrows():
     
     # ✅ RETORNA o DataFrame final para uso nos botões
     return df_final
+
 
 # =========================================================================
 # FUNÇÃO PRINCIPAL DO STREAMLIT (Interface)
@@ -347,9 +354,11 @@ def main():
 
                 # Formulário de Ajuste
                 st.subheader("Alterar Status (Falta/Presença)")
+                
                 df_chamada = st.session_state['df_chamada']
                 opcoes_ajuste = {row['Aluno']: row['id_frequencia'] for index, row in df_chamada.iterrows()}
                 col_aluno, col_status = st.columns([2, 1])
+
                 aluno_ajuste = col_aluno.selectbox('Aluno para Ajuste', options=list(opcoes_ajuste.keys()))
                 novo_status_label = col_status.selectbox('Novo Status', options=['PRESENTE', 'FALTA'])
 
