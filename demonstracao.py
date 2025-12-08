@@ -26,19 +26,18 @@ diario_de_classe = {
 # FUNÇÕES DE LÓGICA E BD
 # =========================================================================
 
+# CÓDIGO ATUAL (Errado)
 @st.cache_resource
-    def criar_e_popular_sqlite():
-    conn = sqlite3.connect(DB_NAME)
+    def criar_e_popular_sqlite(): # <--- ERRO: Indentação aqui
+    conn = sqlite3.connect(DB_NAME) # <--- ERRO: Indentação aqui
     cursor = conn.cursor()
 
-    # 1. DELETAR TABELAS ANTIGAS PARA GARANTIR ESTRUTURA CORRETA (Isso é bom para DEMO, pois reseta o ambiente)
-    cursor.execute("DROP TABLE IF EXISTS Frequencia")
-    cursor.execute("DROP TABLE IF EXISTS Notas")
-    cursor.execute("DROP TABLE IF EXISTS Aulas")
-    cursor.execute("DROP TABLE IF EXISTS Alunos")
-    cursor.execute("DROP TABLE IF EXISTS Disciplinas")
-    cursor.execute("DROP TABLE IF EXISTS Turmas")
-    conn.commit()
+# CÓDIGO CORRIGIDO (Tudo alinhado)
+@st.cache_resource
+def criar_e_popular_sqlite():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+# ... E o restante do código da função deve seguir a indentação correta (4 espaços)
     
     # 2. CRIAÇÃO DAS TABELAS
     cursor.execute('''CREATE TABLE Alunos (id_aluno INTEGER PRIMARY KEY, nome TEXT NOT NULL, matricula TEXT UNIQUE NOT NULL);''')
