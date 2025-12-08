@@ -26,7 +26,7 @@ diario_de_classe = {
 # FUNÇÕES DE LÓGICA E BD
 # =========================================================================
 
-    @st.cache_resource
+@st.cache_resource
     def criar_e_popular_sqlite():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
